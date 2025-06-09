@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background: #f5f7fa;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+input[type="number"] {
+    width: 70px;
+    margin-right: 10px;
+}

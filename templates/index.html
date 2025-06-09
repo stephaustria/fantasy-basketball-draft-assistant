@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NBA Fantasy Draft Assistant</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>🏀 Fantasy Draft Assistant</h1>
+
+    <form method="post" action="/update-scoring">
+        <h3>⚙️ Customize Scoring System</h3>
+        <label>Points: <input name="PTS" type="number" step="0.1" value="1.0"></label>
+        <label>Field Goal Made: <input name="FG" type="number" step="0.1" value="2.0"></label>
+        <label>Field Goal Attempted: <input name="FGA" type="number" step="0.1" value="-1.0"></label>
+        <label>Free Throw Made: <input name="FT" type="number" step="0.1" value="1.0"></label>
+        <label>Free Throw Attempted: <input name="FTA" type="number" step="0.1" value="-1.0"></label>
+        <label>Three Point Made: <input name="3P" type="number" step="0.1" value="1.0"></label>
+        <label>Rebounds: <input name="TRB" type="number" step="0.1" value="1.0"></label>
+        <label>Assists: <input name="AST" type="number" step="0.1" value="2.0"></label>
+        <label>Steals: <input name="STL" type="number" step="0.1" value="4.0"></label>
+        <label>Blocks: <input name="BLK" type="number" step="0.1" value="4.0"></label>
+        <label>Turnovers: <input name="TOV" type="number" step="0.1" value="-1.0"></label>
+        <button type="submit">Update Scoring</button>
+    </form>
+
+    <h2>📋 Top 20 Overall Players</h2>
+    {% include "player_table.html" with context %}
+
+    <h2>🛡 Top 5 Guards</h2>
+    {% set players = top_guards %}
+    {% include "player_table.html" with context %}
+
+    <h2>🏀 Top 5 Forwards</h2>
+    {% set players = top_forwards %}
+    {% include "player_table.html" with context %}
+
+    <h2>🏗 Top 5 Centers</h2>
+    {% set players = top_centers %}
+    {% include "player_table.html" with context %}
+
+</body>
+</html>

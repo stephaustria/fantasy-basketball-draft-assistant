@@ -1,0 +1,23 @@
+<table>
+    <tr>
+        <th>Player</th>
+        <th>Team</th>
+        <th>Position</th>
+        <th>Fantasy Score</th>
+        <th>Action</th>
+    </tr>
+    {% for _, row in players.iterrows() %}
+    <tr>
+        <td>{{ row.Player }}</td>
+        <td>{{ row.Team }}</td>
+        <td>{{ row.Position }}</td>
+        <td>{{ "%.2f"|format(row.FantasyScore) }}</td>
+        <td>
+            <form method="post" action="/draft">
+                <input type="hidden" name="player_name" value="{{ row.Player }}">
+                <button type="submit">Draft</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
