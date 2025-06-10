@@ -1,17 +1,15 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.responses import RedirectResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Form, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 import pandas as pd
+from typing import List
 
 app = FastAPI()
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # Load player data
 df = pd.read_csv("data/nba_fantasy_stats.csv")
-drafted_players = set()
+drafted_players: List[str] = []
 scoring_weights = {
     "PTS": 1.0,
     "FG": 2.0,
@@ -23,59 +21,53 @@ scoring_weights = {
     "AST": 2.0,
     "STL": 4.0,
     "BLK": 4.0,
-    "TOV": -1.0
+    "TOV": -2.0
 }
 
 
-def compute_scores():
-    temp_df = df[~df["Player"].isin(drafted_players)].copy()
-    temp_df["FantasyScore"] = (
-        temp_df["PTS"] * scoring_weights["PTS"] +
-        temp_df["FG"] * scoring_weights["FG"] +
-        temp_df["FGA"] * scoring_weights["FGA"] +
-        temp_df["FT"] * scoring_weights["FT"] +
-        temp_df["FTA"] * scoring_weights["FTA"] +
-        temp_df["3P"] * scoring_weights["3P"] +
-        temp_df["TRB"] * scoring_weights["TRB"] +
-        temp_df["AST"] * scoring_weights["AST"] +
-        temp_df["STL"] * scoring_weights["STL"] +
-        temp_df["BLK"] * scoring_weights["BLK"] +
-        temp_df["TOV"] * scoring_weights["TOV"]
+def calculate_fantasy_score(row, weights):
+    return (
+        row["PTS"] * weights["PTS"] +
+        row["FG"] * weights["FG"] +
+        row["FGA"] * weights["FGA"] +
+        row["FT"] * weights["FT"] +
+        row["FTA"] * weights["FTA"] +
+        row["3P"] * weights["3P"] +
+        row["TRB"] * weights["TRB"] +
+        row["AST"] * weights["AST"] +
+        row["STL"] * weights["STL"] +
+        row["BLK"] * weights["STL"] +
+        row["TOV"] * weights["TOV"]
     )
-    return temp_df.sort_values(by="FantasyScore", ascending=False)
 
 
-def get_top_by_position(position, top_n=5):
-    all_players = compute_scores()
-    return all_players[all_players["Pos"].str.contains(position, case=False, na=False)].head(top_n)
+@app.get("/", response_class=HTMLResponse)
+def read_root(request: Request):
+    available_df = df[~df["Player"].isin(drafted_players)].copy()
+    available_df["FantasyScore"] = available_df.apply(lambda row: calculate_fantasy_score(row, scoring_weights), axis=1)
+    sorted_df = available_df.sort_values(by="FantasyScore", ascending=False)
 
-
-@app.get("/")
-def home(request: Request):
-    ranked_players = compute_scores().head(20)
-    top_guards = get_top_by_position("G")
-    top_forwards = get_top_by_position("F")
-    top_centers = get_top_by_position("C")
+    def top_by_position(pos_keyword):
+        return sorted_df[sorted_df["Pos"].str.contains(pos_keyword)].head(5)
 
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "players": ranked_players.to_dict(orient="records"),
-        "top_guards": top_guards.to_dict(orient="records"),
-        "top_forwards": top_forwards.to_dict(orient="records"),
-        "top_centers": top_centers.to_dict(orient="records"),
+        "players": sorted_df.head(15).to_dict(orient="records"),
+        "top_guards": top_by_position("G").to_dict(orient="records"),
+        "top_forwards": top_by_position("F").to_dict(orient="records"),
+        "top_centers": top_by_position("C").to_dict(orient="records"),
         "weights": scoring_weights
     })
 
 
 @app.post("/draft")
-def draft_player(request: Request, player_name: str = Form(...)):
-    drafted_players.add(player_name)
-    return RedirectResponse("/", status_code=303)
+def draft_player(player_name: str = Form(...)):
+    drafted_players.append(player_name)
+    return RedirectResponse(url="/", status_code=303)
 
 
 @app.post("/update-scoring")
 def update_scoring(
-    request: Request,
     points: float = Form(...),
     field_goal_made: float = Form(...),
     field_goal_attempted: float = Form(...),
@@ -88,8 +80,7 @@ def update_scoring(
     blocks: float = Form(...),
     turnovers: float = Form(...)
 ):
-    global scoring_weights
-    scoring_weights = {
+    scoring_weights.update({
         "PTS": points,
         "FG": field_goal_made,
         "FGA": field_goal_attempted,
@@ -101,5 +92,5 @@ def update_scoring(
         "STL": steals,
         "BLK": blocks,
         "TOV": turnovers
-    }
-    return RedirectResponse("/", status_code=303)
+    })
+    return RedirectResponse(url="/", status_code=303)
