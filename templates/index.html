@@ -202,7 +202,11 @@
         {% for row in players %}
         <tr>
             <td>{{ row['Player'] }}</td>
-            <td>{{ row['Team'] }}</td>
+            <td>
+                <img src="https://a.espncdn.com/i/teamlogos/nba/500/{{ row['Team'] | lower }}.png"
+                     alt="{{ row['Team'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+                {{ row['Team'] }}
+            </td>
             <td>{{ row['Pos'] }}</td>
             <td>{{ "%.2f"|format(row['FantasyScore']) }}</td>
             <td>
@@ -225,7 +229,12 @@
         {% for row in top_guards %}
         <tr>
             <td>{{ row['Player'] }}</td>
-            <td>{{ row['Team'] }}</td>
+            <td>
+                <img src="https://a.espncdn.com/i/teamlogos/nba/500/{{ row['Team'] | lower }}.png"
+                     alt="{{ row['Team'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+                {{ row['Team'] }}
+            </td>
+
             <td>{{ "%.2f"|format(row['FantasyScore']) }}</td>
         </tr>
         {% endfor %}
@@ -241,7 +250,12 @@
         {% for row in top_forwards %}
         <tr>
             <td>{{ row['Player'] }}</td>
-            <td>{{ row['Team'] }}</td>
+            <td>
+                <img src="https://a.espncdn.com/i/teamlogos/nba/500/{{ row['Team'] | lower }}.png"
+                     alt="{{ row['Team'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+                {{ row['Team'] }}
+            </td>
+
             <td>{{ "%.2f"|format(row['FantasyScore']) }}</td>
         </tr>
         {% endfor %}
@@ -257,7 +271,12 @@
         {% for row in top_centers %}
         <tr>
             <td>{{ row['Player'] }}</td>
-            <td>{{ row['Team'] }}</td>
+            <td>
+                <img src="https://a.espncdn.com/i/teamlogos/nba/500/{{ row['Team'] | lower }}.png"
+                     alt="{{ row['Team'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+                {{ row['Team'] }}
+            </td>
+
             <td>{{ "%.2f"|format(row['FantasyScore']) }}</td>
         </tr>
         {% endfor %}
