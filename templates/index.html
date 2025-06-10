@@ -1,8 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>NBA Fantasy Draft Assistant</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f4f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #111;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        form h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #222;
+        }
+
+        form label {
+            display: block;
+            margin: 0.5rem 0;
+        }
+
+        input[type="number"] {
+            padding: 0.4rem;
+            margin-left: 0.5rem;
+            width: 5rem;
+        }
+
+        button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background-color: #004b99;
+        }
+
+        .section-title {
+            margin: 1.5rem 0 1rem;
+            font-size: 1.4rem;
+            color: #222;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        td form {
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
     <h1>🏀 Fantasy Draft Assistant</h1>
