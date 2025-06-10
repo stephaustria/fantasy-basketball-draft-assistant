@@ -59,10 +59,11 @@ def home(request: Request):
 
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "players": ranked_players,
-        "top_guards": top_guards,
-        "top_forwards": top_forwards,
-        "top_centers": top_centers
+        "players": ranked_players.to_dict(orient="records"),
+        "top_guards": top_guards.to_dict(orient="records"),
+        "top_forwards": top_forwards.to_dict(orient="records"),
+        "top_centers": top_centers.to_dict(orient="records"),
+        "weights": scoring_weights
     })
 
 
