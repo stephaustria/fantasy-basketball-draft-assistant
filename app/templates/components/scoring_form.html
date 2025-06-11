@@ -1,0 +1,19 @@
+<div class="card">
+    <h3>⚙️ Customize Your Scoring System</h3>
+    <form method="post" action="/update-scoring">
+        <div class="grid">
+            {% for label, key in {
+            'Points': 'PTS', 'Field Goal Made': 'FG', 'Field Goal Attempted': 'FGA',
+            'Free Throw Made': 'FT', 'Free Throw Attempted': 'FTA', '3-Point Made': '3P',
+            'Rebounds': 'TRB', 'Assists': 'AST', 'Steals': 'STL',
+            'Blocks': 'BLK', 'Turnovers': 'TOV'
+            }.items() %}
+            <label>{{ label }}
+                <input name="{{ key|lower|replace('_','') }}" type="number" step="0.1" value="{{ weights[key] }}"
+                       required>
+            </label>
+            {% endfor %}
+        </div>
+        <button type="submit">🔁 Update Scoring</button>
+    </form>
+</div>

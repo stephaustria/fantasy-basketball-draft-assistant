@@ -1,0 +1,34 @@
+<table>
+    <tr>
+        <th>Player</th>
+        <th>Team</th>
+        <th>Position{% if players[0].get('Pos') %}</th>
+        {% endif %}
+        <th>Average Fantasy Points</th>
+        {% if players[0].get('Pos') %}
+        <th>Action</th>
+        {% endif %}
+    </tr>
+    {% for row in players %}
+    <tr>
+        <td>{{ row['Player'] }}</td>
+        <td>
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/{{ row['Team'] | lower }}.png"
+                 alt="{{ row['Team'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+            {{ row['Team'] }}
+        </td>
+        {% if row.get('Pos') %}
+        <td>{{ row['Pos'] }}</td>
+        {% endif %}
+        <td>{{ "%.2f"|format(row['FantasyScore']) }}</td>
+        {% if row.get('Pos') %}
+        <td>
+            <form method="post" action="/draft">
+                <input type="hidden" name="player_name" value="{{ row['Player'] }}">
+                <button type="submit">Draft</button>
+            </form>
+        </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>

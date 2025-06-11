@@ -1,287 +1,163 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>NBA Fantasy Draft Assistant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-          box-sizing: border-box;
-        }
+{% extends "base.html" %}
 
-        body {
-          margin: 0;
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-          background-color: #f6f8fa;
-          color: #1e1e1e;
-        }
+{% block style %}
+<style>
+    * {
+      box-sizing: border-box;
+    }
 
-        header {
-          background-color: #0d1117;
-          color: white;
-          padding: 1.5rem;
-          text-align: center;
-          position: sticky;
-          top: 0;
-          z-index: 1000;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #f6f8fa;
+      color: #1e1e1e;
+    }
 
-        header h1 {
-          margin: 0;
-          font-size: 2rem;
-          letter-spacing: -0.5px;
-        }
+    header {
+      background-color: #0d1117;
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
 
-        .container {
-          max-width: 1200px;
-          margin: 2rem auto;
-          padding: 1rem 2rem;
-        }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: -0.5px;
+    }
 
-        .card {
-          background: white;
-          border-radius: 12px;
-          padding: 2rem;
-          box-shadow: 0 4px 14px rgba(0,0,0,0.05);
-          margin-bottom: 3rem;
-        }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 1rem 2rem;
+    }
 
-        .card h3 {
-          margin-top: 0;
-          font-size: 1.4rem;
-          margin-bottom: 1.5rem;
-        }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+      margin-bottom: 3rem;
+    }
 
-        .grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-          gap: 1.2rem;
-        }
+    .card h3 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+    }
 
-        label {
-          display: flex;
-          flex-direction: column;
-          font-weight: 500;
-          font-size: 0.95rem;
-          color: #333;
-        }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.2rem;
+    }
 
-        input[type="number"] {
-          padding: 0.5rem;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          font-size: 1rem;
-          margin-top: 0.3rem;
-        }
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #333;
+    }
 
-        button {
-          margin-top: 1.5rem;
-          padding: 0.7rem 1.4rem;
-          font-size: 1rem;
-          background-color: #ff6c0c;
-          color: white;
-          border: none;
-          border-radius: 8px;
-          font-weight: bold;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
+    input[type="number"] {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-top: 0.3rem;
+    }
 
-        button:hover {
-          background-color: #005ac1;
-          transform: translateY(-1px);
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.7rem 1.4rem;
+      font-size: 1rem;
+      background-color: #ff6c0c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
 
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          background: white;
-          border-radius: 12px;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-          overflow: hidden;
-        }
+    button:hover {
+      background-color: #005ac1;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
 
-        th, td {
-          text-align: left;
-          padding: 1rem;
-          border-bottom: 1px solid #eee;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
 
-        th {
-          background-color: #f3f4f6;
-          font-weight: 600;
-        }
+    th, td {
+      text-align: left;
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+    }
 
-        td form {
-          margin: 0;
-        }
+    th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
 
-        h2.section-title {
-          font-size: 1.6rem;
-          margin-bottom: 1rem;
-          margin-top: 2.5rem;
-          border-bottom: 2px solid #ddd;
-          padding-bottom: 0.5rem;
-        }
+    td form {
+      margin: 0;
+    }
 
-        @media (max-width: 600px) {
-          th, td {
-            padding: 0.7rem;
-          }
+    h2.section-title {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      margin-top: 2.5rem;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.5rem;
+    }
 
-          .card {
-            padding: 1.2rem;
-          }
+    @media (max-width: 600px) {
+      th, td {
+        padding: 0.7rem;
+      }
 
-          button {
-            width: 100%;
-          }
-        }
-    </style>
-</head>
-<body>
-<header>
-    <h1>🏀 NBA Fantasy Draft Assistant</h1>
-</header>
+      .card {
+        padding: 1.2rem;
+      }
 
-<div class="container">
+      button {
+        width: 100%;
+      }
+    }
+</style>
+{% endblock %}
 
-    <div class="card">
-        <h3>⚙️ Customize Your Scoring System</h3>
-        <form method="post" action="/update-scoring">
-            <div class="grid">
-                <label>Points
-                    <input name="points" type="number" step="0.1" value="{{ weights['PTS'] }}" required>
-                </label>
-                <label>Field Goal Made
-                    <input name="field_goal_made" type="number" step="0.1" value="{{ weights['FG'] }}" required>
-                </label>
-                <label>Field Goal Attempted
-                    <input name="field_goal_attempted" type="number" step="0.1" value="{{ weights['FGA'] }}" required>
-                </label>
-                <label>Free Throw Made
-                    <input name="free_throw_made" type="number" step="0.1" value="{{ weights['FT'] }}" required>
-                </label>
-                <label>Free Throw Attempted
-                    <input name="free_throw_attempted" type="number" step="0.1" value="{{ weights['FTA'] }}" required>
-                </label>
-                <label>3-Point Made
-                    <input name="three_point_made" type="number" step="0.1" value="{{ weights['3P'] }}" required>
-                </label>
-                <label>Rebounds
-                    <input name="rebounds" type="number" step="0.1" value="{{ weights['TRB'] }}" required>
-                </label>
-                <label>Assists
-                    <input name="assists" type="number" step="0.1" value="{{ weights['AST'] }}" required>
-                </label>
-                <label>Steals
-                    <input name="steals" type="number" step="0.1" value="{{ weights['STL'] }}" required>
-                </label>
-                <label>Blocks
-                    <input name="blocks" type="number" step="0.1" value="{{ weights['BLK'] }}" required>
-                </label>
-                <label>Turnovers
-                    <input name="turnovers" type="number" step="0.1" value="{{ weights['TOV'] }}" required>
-                </label>
-            </div>
-            <button type="submit">🔁 Update Scoring</button>
-        </form>
-    </div>
+{% block content %}
 
-    <h2 class="section-title">Top Available Players 📋</h2>
-    <table>
-        <tr>
-            <th>Player</th>
-            <th>Team</th>
-            <th>Position</th>
-            <th>Average Fantasy Points</th>
-            <th>Action</th>
-        </tr>
-        {% for row in players %}
-        <tr>
-            <td>{{ row['Player'] }}</td>
-            <td>
-                <img src="https://a.espncdn.com/i/teamlogos/nba/500/{{ row['Team'] | lower }}.png"
-                     alt="{{ row['Team'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
-                {{ row['Team'] }}
-            </td>
-            <td>{{ row['Pos'] }}</td>
-            <td>{{ "%.2f"|format(row['FantasyScore']) }}</td>
-            <td>
-                <form method="post" action="/draft">
-                    <input type="hidden" name="player_name" value="{{ row['Player'] }}">
-                    <button type="submit">Draft</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+{% include "components/scoring_form.html" %}
 
-    <h2 class="section-title">Top 5 Guards 🎯</h2>
-    <table>
-        <tr>
-            <th>Player</th>
-            <th>Team</th>
-            <th>Average Fantasy Points</th>
-        </tr>
-        {% for row in top_guards %}
-        <tr>
-            <td>{{ row['Player'] }}</td>
-            <td>
-                <img src="https://a.espncdn.com/i/teamlogos/nba/500/{{ row['Team'] | lower }}.png"
-                     alt="{{ row['Team'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
-                {{ row['Team'] }}
-            </td>
+<h2 class="section-title">Top Available Players 📋</h2>
+{% set players = players %}
+{% include "components/player_table.html" %}
 
-            <td>{{ "%.2f"|format(row['FantasyScore']) }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+<h2 class="section-title">Top 5 Guards 🎯</h2>
+{% set players = top_guards %}
+{% include "components/player_table.html" %}
 
-    <h2 class="section-title">Top 5 Forwards ⚔️</h2>
-    <table>
-        <tr>
-            <th>Player</th>
-            <th>Team</th>
-            <th>Average Fantasy Points</th>
-        </tr>
-        {% for row in top_forwards %}
-        <tr>
-            <td>{{ row['Player'] }}</td>
-            <td>
-                <img src="https://a.espncdn.com/i/teamlogos/nba/500/{{ row['Team'] | lower }}.png"
-                     alt="{{ row['Team'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
-                {{ row['Team'] }}
-            </td>
+<h2 class="section-title">Top 5 Forwards ⚔️</h2>
+{% set players = top_forwards %}
+{% include "components/player_table.html" %}
 
-            <td>{{ "%.2f"|format(row['FantasyScore']) }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+<h2 class="section-title">Top 5 Centers 🛡️</h2>
+{% set players = top_centers %}
+{% include "components/player_table.html" %}
 
-    <h2 class="section-title">Top 5 Centers 🛡️</h2>
-    <table>
-        <tr>
-            <th>Player</th>
-            <th>Team</th>
-            <th>Average Fantasy Points</th>
-        </tr>
-        {% for row in top_centers %}
-        <tr>
-            <td>{{ row['Player'] }}</td>
-            <td>
-                <img src="https://a.espncdn.com/i/teamlogos/nba/500/{{ row['Team'] | lower }}.png"
-                     alt="{{ row['Team'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
-                {{ row['Team'] }}
-            </td>
 
-            <td>{{ "%.2f"|format(row['FantasyScore']) }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-</div>
-</body>
-</html>
+{% endblock %}
