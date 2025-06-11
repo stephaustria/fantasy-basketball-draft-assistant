@@ -11,7 +11,13 @@
     </tr>
     {% for row in players %}
     <tr>
-        <td>{{ row['Player'] }}</td>
+        <td>
+            <img src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/{{ row['PlayerID'] }}.png"
+                 alt="{{ row['Player'] }}"
+                 style="height: 50px; width: 50px; object-fit: cover; border-radius: 50%; vertical-align: middle; margin-right: 8px;">
+            {{ row['Player'] }}
+        </td>
+
         <td>
             <img src="https://a.espncdn.com/i/teamlogos/nba/500/{{ row['Team'] | lower }}.png"
                  alt="{{ row['Team'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
