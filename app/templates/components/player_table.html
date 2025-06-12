@@ -6,6 +6,7 @@
         {% endif %}
         <th>Average Fantasy Points</th>
         {% if players[0].get('Pos') %}
+        <th>Total Fantasy Points</th>
         <th>Action</th>
         {% endif %}
     </tr>
@@ -27,6 +28,7 @@
         <td>{{ row['Pos'] }}</td>
         {% endif %}
         <td>{{ "%.2f"|format(row['FantasyScore']) }}</td>
+        <td>{{ "%.0f"|format(row['TotalFantasyPoints']) }}</td>
         {% if row.get('Pos') %}
         <td>
             <form method="post" action="/draft">

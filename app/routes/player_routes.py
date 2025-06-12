@@ -11,6 +11,7 @@ router = APIRouter()
 def read_root(request: Request):
     available_df = df[~df["Player"].isin(drafted_players)].copy()
     available_df["FantasyScore"] = available_df.apply(lambda row: calculate_fantasy_score(row, scoring_weights), axis=1)
+    available_df["TotalFantasyPoints"] = available_df["FantasyScore"] * available_df["G"]
     sorted_df = available_df.sort_values(by="FantasyScore", ascending=False)
 
     def top_by_position(pos_keyword):
