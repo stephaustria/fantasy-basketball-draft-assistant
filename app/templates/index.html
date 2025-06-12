@@ -159,5 +159,38 @@
 {% set players = top_centers %}
 {% include "components/player_table.html" %}
 
+<h2 class="section-title">Drafted Players ✅</h2>
+<table>
+    <tr>
+        <th>Player</th>
+        <th>Team</th>
+        <th>Position</th>
+        <th>Average Fantasy Points</th>
+        <th>Total Fantasy Points</th>
+    </tr>
+    {% for row in drafted_players_list %}
+    <tr>
+        <td>
+            <img src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/{{ row['PlayerID'] | default('3112335') }}.png&h=80&w=80&scale=crop"
+                 alt="{{ row['Player'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+            {{ row['Player'] }}
+        </td>
+        <td>
+            <img src="https://a.espncdn.com/i/teamlogos/nba/500/{{ row['Team'] | lower }}.png"
+                 alt="{{ row['Team'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+            {{ row['Team'] }}
+        </td>
+        <td>{{ row['Pos'] }}</td>
+        <td>{{ "%.2f"|format(row['FantasyScore']) }}</td>
+        <td>{{ "%.0f"|format(row['TotalFantasyPoints']) }}</td>
+        <td>
+            <form method="post" action="/undo-draft">
+                <input type="hidden" name="player_name" value="{{ row['Player'] }}">
+                <button type="submit">Undo</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 
 {% endblock %}

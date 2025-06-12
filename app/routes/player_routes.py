@@ -17,19 +17,31 @@ def read_root(request: Request):
     def top_by_position(pos_keyword):
         return sorted_df[sorted_df["Pos"].str.contains(pos_keyword)].head(5)
 
+    drafted_df = df[df["Player"].isin(drafted_players)].copy()
+    drafted_df["FantasyScore"] = drafted_df.apply(lambda row: calculate_fantasy_score(row, scoring_weights), axis=1)
+    drafted_df["TotalFantasyPoints"] = drafted_df["FantasyScore"] * drafted_df["G"]
+
     return templates.TemplateResponse("index.html", {
         "request": request,
         "players": sorted_df.head(15).to_dict(orient="records"),
         "top_guards": top_by_position("G").to_dict(orient="records"),
         "top_forwards": top_by_position("F").to_dict(orient="records"),
         "top_centers": top_by_position("C").to_dict(orient="records"),
-        "weights": scoring_weights
+        "weights": scoring_weights,
+        "drafted_players_list": drafted_df.to_dict(orient="records"),
     })
 
 
 @router.post("/draft")
 def draft_player(player_name: str = Form(...)):
     drafted_players.append(player_name)
+    return RedirectResponse(url="/", status_code=303)
+
+
+@router.post("/undo-draft")
+def undo_draft(player_name: str = Form(...)):
+    if player_name in drafted_players:
+        drafted_players.remove(player_name)
     return RedirectResponse(url="/", status_code=303)
 
 
