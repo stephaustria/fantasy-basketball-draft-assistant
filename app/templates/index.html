@@ -141,56 +141,63 @@
 
 {% block content %}
 
-{% include "components/scoring_form.html" %}
+<div style="display: flex; gap: 2rem; align-items: flex-start;">
+    <!-- Left/Main Section -->
+    <div style="flex: 3;">
+        {% include "components/scoring_form.html" %}
 
-<h2 class="section-title">Top Available Players 📋</h2>
-{% set players = players %}
-{% include "components/player_table.html" %}
+        <h2 class="section-title">Top Available Players 📋</h2>
+        {% set players = players %}
+        {% include "components/player_table.html" %}
 
-<h2 class="section-title">Top 5 Guards 🎯</h2>
-{% set players = top_guards %}
-{% include "components/player_table.html" %}
+        <h2 class="section-title">Top 5 Guards 🎯</h2>
+        {% set players = top_guards %}
+        {% include "components/player_table.html" %}
 
-<h2 class="section-title">Top 5 Forwards ⚔️</h2>
-{% set players = top_forwards %}
-{% include "components/player_table.html" %}
+        <h2 class="section-title">Top 5 Forwards ⚔️</h2>
+        {% set players = top_forwards %}
+        {% include "components/player_table.html" %}
 
-<h2 class="section-title">Top 5 Centers 🛡️</h2>
-{% set players = top_centers %}
-{% include "components/player_table.html" %}
+        <h2 class="section-title">Top 5 Centers 🛡️</h2>
+        {% set players = top_centers %}
+        {% include "components/player_table.html" %}
+    </div>
 
-<h2 class="section-title">Drafted Players ✅</h2>
-<table>
-    <tr>
-        <th>Player</th>
-        <th>Team</th>
-        <th>Position</th>
-        <th>Average Fantasy Points</th>
-        <th>Total Fantasy Points</th>
-    </tr>
-    {% for row in drafted_players_list %}
-    <tr>
-        <td>
-            <img src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/{{ row['PlayerID'] | default('3112335') }}.png&h=80&w=80&scale=crop"
-                 alt="{{ row['Player'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
-            {{ row['Player'] }}
-        </td>
-        <td>
-            <img src="https://a.espncdn.com/i/teamlogos/nba/500/{{ row['Team'] | lower }}.png"
-                 alt="{{ row['Team'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
-            {{ row['Team'] }}
-        </td>
-        <td>{{ row['Pos'] }}</td>
-        <td>{{ "%.2f"|format(row['FantasyScore']) }}</td>
-        <td>{{ "%.0f"|format(row['TotalFantasyPoints']) }}</td>
-        <td>
-            <form method="post" action="/undo-draft">
-                <input type="hidden" name="player_name" value="{{ row['Player'] }}">
-                <button type="submit">Undo</button>
-            </form>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-
+    <!-- Sticky Side Panel for Drafted Players -->
+    <div style="
+  flex: 1;
+  position: sticky;
+  top: 100px;
+  align-self: flex-start;
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  max-height: 80vh;
+  overflow-y: auto;
+">
+        <h2 class="section-title">Drafted Players ✅</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <th style="text-align: left;">Player</th>
+                <th style="text-align: left;">Undo</th>
+            </tr>
+            {% for row in drafted_players_list %}
+            <tr>
+                <td>
+                    <img src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/{{ row['PlayerID'] | default('3112335') }}.png&h=40&w=40&scale=crop"
+                         alt="{{ row['Player'] }}" style="height: 24px; vertical-align: middle; margin-right: 8px;">
+                    {{ row['Player'] }}
+                </td>
+                <td>
+                    <form method="post" action="/undo-draft">
+                        <input type="hidden" name="player_name" value="{{ row['Player'] }}">
+                        <button type="submit" style="font-size: 0.8rem;">Undo</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
 {% endblock %}
