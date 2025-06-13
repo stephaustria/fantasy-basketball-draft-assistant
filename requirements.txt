@@ -1,0 +1,3 @@
+fastapi~=0.115.12
+MyApplication~=0.1.0
+pandas~=2.3.0
