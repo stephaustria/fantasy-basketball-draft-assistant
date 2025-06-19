@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
+from app.db.mongo import drafted_collection, scoring_collection
 from app.models.scoring import calculate_fantasy_score
-from app.services.fantasy import df, scoring_weights, drafted_players
+from app.services.fantasy import df
 from app.config import templates
 
 router = APIRouter()
@@ -9,7 +10,10 @@ router = APIRouter()
 
 @router.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
-    available_df = df[~df["Player"].isin(drafted_players)].copy()
+    drafted_names = [doc["player_name"] for doc in drafted_collection.find()]
+    scoring_weights = scoring_collection.find_one()["weights"]
+
+    available_df = df[~df["Player"].isin(drafted_names)].copy()
     available_df["FantasyScore"] = available_df.apply(lambda row: calculate_fantasy_score(row, scoring_weights), axis=1)
     available_df["TotalFantasyPoints"] = available_df["FantasyScore"] * available_df["G"]
     sorted_df = available_df.sort_values(by="FantasyScore", ascending=False)
@@ -17,7 +21,7 @@ def read_root(request: Request):
     def top_by_position(pos_keyword):
         return sorted_df[sorted_df["Pos"].str.contains(pos_keyword)].head(5)
 
-    drafted_df = df[df["Player"].isin(drafted_players)].copy()
+    drafted_df = df[df["Player"].isin(drafted_names)].copy()
     drafted_df["FantasyScore"] = drafted_df.apply(lambda row: calculate_fantasy_score(row, scoring_weights), axis=1)
     drafted_df["TotalFantasyPoints"] = drafted_df["FantasyScore"] * drafted_df["G"]
 
@@ -34,14 +38,14 @@ def read_root(request: Request):
 
 @router.post("/draft")
 def draft_player(player_name: str = Form(...)):
-    drafted_players.append(player_name)
+    if not drafted_collection.find_one({"player_name": player_name}):
+        drafted_collection.insert_one({"player_name": player_name})
     return RedirectResponse(url="/", status_code=303)
 
 
 @router.post("/undo-draft")
 def undo_draft(player_name: str = Form(...)):
-    if player_name in drafted_players:
-        drafted_players.remove(player_name)
+    drafted_collection.delete_one({"player_name": player_name})
     return RedirectResponse(url="/", status_code=303)
 
 
@@ -59,17 +63,10 @@ def update_scoring(
         blocks: float = Form(...),
         turnovers: float = Form(...)
 ):
-    scoring_weights.update({
-        "PTS": points,
-        "FG": field_goal_made,
-        "FGA": field_goal_attempted,
-        "FT": free_throw_made,
-        "FTA": free_throw_attempted,
-        "3P": three_point_made,
-        "TRB": rebounds,
-        "AST": assists,
-        "STL": steals,
-        "BLK": blocks,
-        "TOV": turnovers
-    })
+    new_weights = {
+        "PTS": points, "FG": field_goal_made, "FGA": field_goal_attempted,
+        "FT": free_throw_made, "FTA": free_throw_attempted, "3P": three_point_made,
+        "TRB": rebounds, "AST": assists, "STL": steals, "BLK": blocks, "TOV": turnovers
+    }
+    scoring_collection.update_one({}, {"$set": {"weights": new_weights}})
     return RedirectResponse(url="/", status_code=303)
