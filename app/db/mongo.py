@@ -1,7 +1,9 @@
 from pymongo import MongoClient
 import os
 
-client = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017"))
+client = MongoClient(os.getenv(
+    "mongodb+srv://stephaustria:Stephen!0730@fantasydraftassistant.xoo7ocr.mongodb.net/?retryWrites=true&w=majority&appName=FantasyDraftAssistant",
+    "mongodb://localhost:27017"))
 db = client["fantasy_draft"]
 drafted_collection = db["drafted_players"]
 scoring_collection = db["scoring_weights"]
