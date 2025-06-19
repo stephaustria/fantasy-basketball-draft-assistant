@@ -2,18 +2,41 @@
     <h3>⚙️ Customize Your Scoring System</h3>
     <form method="post" action="/update-scoring">
         <div class="grid">
-            {% for label, key in {
-            'Points': 'PTS', 'Field Goal Made': 'FG', 'Field Goal Attempted': 'FGA',
-            'Free Throw Made': 'FT', 'Free Throw Attempted': 'FTA', '3-Point Made': '3P',
-            'Rebounds': 'TRB', 'Assists': 'AST', 'Steals': 'STL',
-            'Blocks': 'BLK', 'Turnovers': 'TOV'
-            }.items() %}
-            <label>{{ label }}
-                <input name="{{ key|lower|replace('_','') }}" type="number" step="0.1" value="{{ weights[key] }}"
-                       required>
+            <label>Points
+                <input type="number" name="points" step="0.1" value="{{ weights['PTS'] }}" required>
             </label>
-            {% endfor %}
+            <label>Field Goals Made
+                <input type="number" name="field_goal_made" step="0.1" value="{{ weights['FG'] }}" required>
+            </label>
+            <label>Field Goal Attempts
+                <input type="number" name="field_goal_attempted" step="0.1" value="{{ weights['FGA'] }}" required>
+            </label>
+            <label>Free Throws Made
+                <input type="number" name="free_throw_made" step="0.1" value="{{ weights['FT'] }}" required>
+            </label>
+            <label>Free Throw Attempts
+                <input type="number" name="free_throw_attempted" step="0.1" value="{{ weights['FTA'] }}" required>
+            </label>
+            <label>3PT Made
+                <input type="number" name="three_point_made" step="0.1" value="{{ weights['3P'] }}" required>
+            </label>
+            <label>Rebounds
+                <input type="number" name="rebounds" step="0.1" value="{{ weights['TRB'] }}" required>
+            </label>
+            <label>Assists
+                <input type="number" name="assists" step="0.1" value="{{ weights['AST'] }}" required>
+            </label>
+            <label>Steals
+                <input type="number" name="steals" step="0.1" value="{{ weights['STL'] }}" required>
+            </label>
+            <label>Blocks
+                <input type="number" name="blocks" step="0.1" value="{{ weights['BLK'] }}" required>
+            </label>
+            <label>Turnovers
+                <input type="number" name="turnovers" step="0.1" value="{{ weights['TOV'] }}" required>
+            </label>
         </div>
-        <button type="submit">🔁 Update Scoring</button>
+
+        <button type="submit" style="margin-top: 2rem;">🔁 Update Scoring</button>
     </form>
 </div>
